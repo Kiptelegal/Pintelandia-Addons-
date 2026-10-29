@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pintelandia-Addons</title>
+<style>
+  :root {
+    --bg: #0e1310;
+    --card: #161d18;
+    --line: #26332a;
+    --text: #e8efe9;
+    --muted: #9fb0a3;
+    --accent: #7fc24f;
+    --accent-dark: #4f8a2b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  header {
+    padding: 20px 16px 12px;
+    border-bottom: 1px solid var(--line);
+    text-align: center;
+  }
+  header a { color: var(--accent); text-decoration: none; font-size: 1.5rem; font-weight: 800; letter-spacing: .5px; }
+  header p { margin: 4px 0 0; color: var(--muted); font-size: .9rem; }
+  main { max-width: 960px; margin: 0 auto; padding: 16px; }
+
+  /* Capa (quadrado). Sem imagem, mostra um padrão de folhas verdes. */
+  .capa {
+    display: block;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    border: 3px solid #000;
+    border-radius: 4px;
+    background-color: #5b7240;
+    background-image:
+      linear-gradient(115deg, transparent 40%, #9db97a 41%, #9db97a 44%, transparent 45%),
+      linear-gradient(60deg, transparent 55%, #3b5316 56%, #3b5316 60%, transparent 61%),
+      linear-gradient(150deg, transparent 30%, #262f16 31%, #262f16 33%, transparent 34%),
+      linear-gradient(95deg, transparent 70%, #3b5316 71%, #3b5316 75%, transparent 76%);
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    padding: 0;
+    cursor: pointer;
+  }
+  .capa img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* Página inicial: grade de cartões */
+  .grade {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 16px;
+  }
+  .cartao {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .cartao .linha { display: flex; gap: 10px; align-items: flex-end; }
+  .cartao .linha .capa { flex: 1 1 auto; }
+  .cartao h2 {
+    margin: 10px 0 0;
+    font-size: 1rem;
+    overflow-wrap: anywhere;
+  }
+
+  .baixar {
+    display: inline-block;
+    background: var(--accent);
+    color: #0b1208;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 10px 12px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: .85rem;
+    border: 0;
+    cursor: pointer;
+  }
+  .baixar:hover { background: #95d765; }
+  .cartao .baixar { flex: 0 0 auto; }
+
+  /* Página do addon */
+  .voltar {
+    display: inline-block;
+    color: var(--accent);
+    text-decoration: none;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .detalhe { max-width: 640px; margin: 0 auto; }
+  .detalhe .capa { max-width: 320px; cursor: default; }
+  .detalhe h1 { margin: 16px 0 8px; font-size: 1.5rem; overflow-wrap: anywhere; }
+  .detalhe .desc { color: var(--text); white-space: pre-line; margin-bottom: 16px; }
+  .detalhe .baixar { font-size: 1rem; padding: 12px 20px; }
+  .imagens { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin: 16px 0; }
+  .imagens img { width: 100%; border-radius: 6px; border: 1px solid var(--line); display: block; }
+
+  .vazio { text-align: center; color: var(--muted); padding: 40px 0; }
+  footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 24px 16px 32px; }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="#/">Pintelandia-Addons</a>
+  <p>Addons de Minecraft Bedrock</p>
+</header>
+
+<main id="app"></main>
+
+<footer>Pintelandia-Addons</footer>
+
+<script>
+/* ============================================================
+   COMO ADICIONAR UM ADDON NOVO
+   Copie um bloco { ... } da lista abaixo, cole no fim (com vírgula
+   entre os blocos) e troque os campos:
+
+   id        -> nome curto sem espaço nem acento (ex: "cachorro-estranho")
+   nome      -> nome que aparece embaixo do quadrado
+   descricao -> texto da página do addon
+   capa      -> link ou arquivo da imagem do quadrado ("" = padrão verde)
+   imagens   -> outras imagens da página do addon (pode deixar [])
+   link      -> link do MediaFire com o arquivo .mcaddon
+   ============================================================ */
+var ADDONS = [
+  {
+    id: "exemplo-1",
+    nome: "Addon de Exemplo 1",
+    descricao: "Aqui vai a descrição do addon.\nDá pra escrever em várias linhas.",
+    capa: "",
+    imagens: [],
+    link: "https://www.mediafire.com/"
+  },
+  {
+    id: "exemplo-2",
+    nome: "Addon de Exemplo 2",
+    descricao: "Outro addon de teste, só pra ver a lista com mais de um cartão.",
+    capa: "",
+    imagens: [],
+    link: "https://www.mediafire.com/"
+  },
+  {
+    id: "exemplo-3",
+    nome: "Addon de Exemplo 3",
+    descricao: "Troque os dados deste bloco pelo seu primeiro addon de verdade.",
+    capa: "",
+    imagens: [],
+    link: "https://www.mediafire.com/"
+  }
+];
+
+/* ---------- daqui pra baixo não precisa mexer ---------- */
+var app = document.getElementById("app");
+
+function el(tag, attrs, children) {
+  var e = document.createElement(tag);
+  for (var k in (attrs || {})) {
+    if (k === "text") e.textContent = attrs[k];
+    else e.setAttribute(k, attrs[k]);
+  }
+  (children || []).forEach(function (c) { e.appendChild(c); });
+  return e;
+}
+
+function capaEl(addon, clicavel) {
+  var box = el(clicavel ? "a" : "div", { "class": "capa" });
+  if (clicavel) {
+    box.setAttribute("href", "#/addon/" + encodeURIComponent(addon.id));
+    box.setAttribute("aria-label", "Abrir " + addon.nome);
+  }
+  if (addon.capa) {
+    box.appendChild(el("img", { src: addon.capa, alt: "Capa de " + addon.nome, loading: "lazy" }));
+  }
+  return box;
+}
+
+function botaoBaixar(addon) {
+  return el("a", {
+    "class": "baixar",
+    href: addon.link,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    text: "Baixar"
+  });
+}
+
+function paginaInicial() {
+  app.textContent = "";
+  if (!ADDONS.length) {
+    app.appendChild(el("p", { "class": "vazio", text: "Nenhum addon por aqui ainda." }));
+    return;
+  }
+  var grade = el("div", { "class": "grade" });
+  ADDONS.forEach(function (a) {
+    var linha = el("div", { "class": "linha" }, [capaEl(a, true), botaoBaixar(a)]);
+    var cartao = el("div", { "class": "cartao" }, [linha, el("h2", { text: a.nome })]);
+    grade.appendChild(cartao);
+  });
+  app.appendChild(grade);
+}
+
+function paginaAddon(id) {
+  var a = ADDONS.filter(function (x) { return x.id === id; })[0];
+  app.textContent = "";
+  if (!a) {
+    app.appendChild(el("p", { "class": "vazio", text: "Addon não encontrado." }));
+    app.appendChild(el("p", { "class": "vazio" }, [el("a", { "class": "voltar", href: "#/", text: "← Voltar" })]));
+    return;
+  }
+  var d = el("div", { "class": "detalhe" }, [
+    el("a", { "class": "voltar", href: "#/", text: "← Voltar" }),
+    capaEl(a, false),
+    el("h1", { text: a.nome }),
+    el("div", { "class": "desc", text: a.descricao })
+  ]);
+  if (a.imagens && a.imagens.length) {
+    var imgs = el("div", { "class": "imagens" });
+    a.imagens.forEach(function (src) {
+      imgs.appendChild(el("img", { src: src, alt: "Imagem de " + a.nome, loading: "lazy" }));
+    });
+    d.appendChild(imgs);
+  }
+  d.appendChild(botaoBaixar(a));
+  app.appendChild(d);
+  document.title = a.nome + " — Pintelandia-Addons";
+}
+
+function rotear() {
+  var h = location.hash || "#/";
+  var m = h.match(/^#\/addon\/(.+)$/);
+  if (m) {
+    paginaAddon(decodeURIComponent(m[1]));
+  } else {
+    document.title = "Pintelandia-Addons";
+    paginaInicial();
+  }
+  window.scrollTo(0, 0);
+}
+
+window.addEventListener("hashchange", rotear);
+rotear();
+</script>
+</body>
+</html>
